@@ -18,7 +18,7 @@ void setColor(int color);  //cambiar color
 void mostrarNombres();
 int generarNumeroAleatorio();
 void grafica(int color);
-
+void limpiarBuffer();
 
 // menu principal 
 void mostrarMenu();
@@ -29,3 +29,12 @@ string obtenerFechaActual();
 
 //submenu venta
 void Menu_Pila();
+
+//submenu producto
+void Menu_Lista();
+
+//submenu trabajadores
+void trabajadores(); 
+
+//submenu cliente
+void cliente();

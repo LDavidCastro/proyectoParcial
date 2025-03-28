@@ -26,7 +26,7 @@ void mostrarMenu() {
             gotoxy(45, 8);cout << "Seleccione una opcion:";
 
             // Mostrar opciones
-            for (int i = 1; i <= 3; i++) {
+            for (int i = 1; i <= 6; i++) {
                 gotoxy(x, y + i - 1);
                 if (i == opcion) {
                     setColor(14);
@@ -40,7 +40,10 @@ void mostrarMenu() {
                 switch (i) {
                 case 1: cout << "Compra (cola)"; break;
                 case 2: cout << "Venta (pila)"; break;
-                case 3: cout << "Salir"; break;
+                case 3: cout << "Producto(lista simple)"; break;
+                case 4: cout << "Trabajadores(lista doblemente enlazada)";break;
+                case 5: cout << "Clientes (lista circular)";break;
+                case 6: cout << "Salir"; break;
                 }
             }
 
@@ -51,7 +54,7 @@ void mostrarMenu() {
                     opcion--;
                     PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\nuevo3.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
                 }
-                else if (tecla == 80 && opcion < 3) { // Flecha abajo
+                else if (tecla == 80 && opcion < 6) { // Flecha abajo
                     opcion++;
                     PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\nuevo3.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
                 }
@@ -62,7 +65,7 @@ void mostrarMenu() {
         }
 
         setColor(15);
-        if (opcion == 3) {
+        if (opcion == 6) {
             PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\notificacion8.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al salir
             Sleep(1000); // Espera un poco para que el sonido se reproduzca antes de cerrar
             break;
@@ -77,6 +80,18 @@ void mostrarMenu() {
             PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\nuevo6.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
             Menu_Pila();
             break;
-        }
+        case 3:
+            PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\nuevo6.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
+            Menu_Lista();
+            break;
+        case 4:
+            PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\nuevo6.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
+            trabajadores();
+            break;
+        case 5:
+            PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\nuevo6.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
+            cliente();
+            break;
+        }   
     }
 }

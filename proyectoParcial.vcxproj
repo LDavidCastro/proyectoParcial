@@ -130,7 +130,10 @@
     <ClCompile Include="logo.cpp" />
     <ClCompile Include="menuPrincipal.cpp" />
     <ClCompile Include="proyectoParcial.cpp" />
+    <ClCompile Include="subMenuClientes.cpp" />
     <ClCompile Include="subMenuCompra.cpp" />
+    <ClCompile Include="subMenuProducto.cpp" />
+    <ClCompile Include="subMenuTrabajadores.cpp" />
     <ClCompile Include="subMenuVenta.cpp" />
   </ItemGroup>
   <ItemGroup>

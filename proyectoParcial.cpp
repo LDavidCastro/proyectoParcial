@@ -14,6 +14,7 @@ void gotoxy(int x, int y) {
 // protoripos de funcion 
 void delay(int ms);        //pausar
 void setColor(int color);  //cambiar color 
+
 void cafe(int color);
 
 

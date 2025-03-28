@@ -38,47 +38,52 @@ int Opciones_Menu(const char* titulo, const char* opciones[], int n);
 void Eliminar_Nodop(Nodop*&, int, int, int, int, string, string, string, string, string);
 void Buscar_Nodop(Nodop*&, int, int, int, int, string, string, string, string, string);
 void dibujarFigura(int opcion);
+void Vaciar_Pila(Nodop*& pila);
+
 void clearCin()
 {
 	cin.clear();
 	cin.ignore(INT_MAX, '\n');
 }
 
-
 void Insertar_Nodop(Nodop*& pila, int a, int b, int c, int d, string h, string i, string j, string l, string m) {
-	string Fecha_de_venta = i = obtenerFechaActual();
 	char continuar;
+	i = obtenerFechaActual();  // Obtener la fecha de venta actual
 
 	do {
-
 		Nodop* nuevo_nodo = new Nodop();
-		system("cls");  // Limpiar pantalla
-		clearCin();  // Limpiar buffer de entrada
-		DibujarRecuadro();  // Dibuja el recuadro
+		system("cls");
+		cin.clear();
+		cin.ignore(100, '\n');  // Limpiar el buffer de entrada
+		DibujarRecuadro();
 
-		gotoxy(40, 7); cout << a;  // ID_Ventas
-		gotoxy(40, 8); cin >> b;  // ID_Cliente
-		cin.ignore();  // Limpiar buffer de entrada después de cin
+		gotoxy(40, 7); cout << a;
+		gotoxy(40, 8); cin >> b;
+		cin.ignore(100, '\n');  // Limpiar buffer  
 
-		gotoxy(48, 13); getline(cin, h);  // Tipo_de_Cafe_ventido
-		gotoxy(48, 14); cout << i;  // Fecha_de_venta
-		gotoxy(48, 15); cin >> c;  // Precio_Unitario
-		gotoxy(48, 16); cin >> d;  // Cantidad_vendida
-		cin.ignore();  // Limpiar buffer
+		gotoxy(48, 13); getline(cin, h);
+		gotoxy(48, 14); cout << i;
+		gotoxy(48, 15); cin >> c;
+		gotoxy(48, 16); cin >> d;
+		cin.ignore(100, '\n');  // Limpiar buffer  
 
-		gotoxy(48, 21); getline(cin, j);  // Descuento
+		gotoxy(48, 21); getline(cin, j);
 
-		// Calcular el total considerando el descuento
+		// Calcular total
 		float precio_total = c * d;
-		float descuento = stof(j) / 100.0 * precio_total;  // Convertir descuento a decimal y calcular
+		float descuento = 0.0;
+		try {
+			descuento = stof(j) / 100.0 * precio_total;
+		}
+		catch (const invalid_argument& e) {
+			cout << "Error: Descuento no válido. Se tomará como 0%.\n";
+		}
 		float total_final = precio_total - descuento;
 
-		l = to_string(total_final);  // Convertir total a string
+		gotoxy(48, 22); cout << total_final;
+		gotoxy(48, 23); getline(cin, m);
 
-		gotoxy(48, 22); cout << l;  // Mostrar Total calculado
-		gotoxy(48, 23); getline(cin, m);  // Metodo_de_pago
-
-		// Asignar los datos al nodo
+		// Asignar datos
 		nuevo_nodo->datos.ID_Ventas = a;
 		nuevo_nodo->datos.ID_Cliente = b;
 		nuevo_nodo->datos.Tipo_de_Cafe_ventido = h;
@@ -86,64 +91,119 @@ void Insertar_Nodop(Nodop*& pila, int a, int b, int c, int d, string h, string i
 		nuevo_nodo->datos.Precio_Unitario = c;
 		nuevo_nodo->datos.Cantidad_vendida = d;
 		nuevo_nodo->datos.Descuento = j;
-		nuevo_nodo->datos.Total = l;
+		nuevo_nodo->datos.Total = to_string(total_final);
 		nuevo_nodo->datos.Metodo_de_pago = m;
 
 		// Insertar nodo en la pila
 		nuevo_nodo->siguiente = pila;
 		pila = nuevo_nodo;
 
-		// Mostrar mensaje y actualizar archivo
 		gotoxy(2, 27);
 		cout << " *- NODO INGRESADO  -*" << endl << endl;
 
-		// Mostrar la pila
-		Mostrar_Pila(pila, VENTAS.Cantidad_vendida, VENTAS.Precio_Unitario, VENTAS.ID_Ventas, VENTAS.ID_Cliente, VENTAS.Tipo_de_Cafe_ventido, VENTAS.Fecha_de_venta, VENTAS.Descuento, VENTAS.Total, VENTAS.Metodo_de_pago);
+		// Mostrar pila
+		Mostrar_Pila(pila, pila->datos.Cantidad_vendida, pila->datos.Precio_Unitario, pila->datos.ID_Ventas,
+			pila->datos.ID_Cliente, pila->datos.Tipo_de_Cafe_ventido, pila->datos.Fecha_de_venta,
+			pila->datos.Descuento, pila->datos.Total, pila->datos.Metodo_de_pago);
 
-		a++;
 		// Preguntar si desea ingresar otro nodo
 		gotoxy(5, 29);
 		cout << endl << " DESEA INGRESAR OTRO NODO DE DATOS? (s/n): ";
 		cin >> continuar;
-		cin.ignore();  // Limpiar el buffer antes de la siguiente iteración
+		cin.ignore(100, '\n');  // Limpiar buffer antes de repetir el ciclo
+
 	} while (continuar == 's' || continuar == 'S');
 }
 
-void Mostrar_Pila(Nodop*& pila, int a, int b, int c, int d, string h, string i, string j, string l, string m) {
-
-	Nodop* aux = new Nodop();
-	aux = pila;
-	if (pila != NULL)
-	{
-		while (aux != NULL) {
-
-			cout << "----------------------------------";
-			cout << endl << &aux->datos << "\n";
-			cout << endl << " ID venta: " << aux->datos.ID_Ventas << "\n";
-			cout << endl << " ID cliente: " << aux->datos.ID_Cliente << "\n";
-			cout << endl << " Tipo de Cafe: " << aux->datos.Tipo_de_Cafe_ventido << "\n";
-			cout << endl << " Fecha de venta: " << aux->datos.Fecha_de_venta << "\n";
-			cout << endl << " Precio Unitario: " << aux->datos.Precio_Unitario << "\n";
-			cout << endl << " Cantidad Vendida: " << aux->datos.Cantidad_vendida << "\n";
-			cout << endl << " Descuento: " << aux->datos.Descuento << "\n";
-			cout << endl << " Metodo de pago: " << aux->datos.Metodo_de_pago << "\n";
-			cout << endl << " Total: " << aux->datos.Total << "\n";
-			cout << "----------------------------------\n";
-
-			aux = aux->siguiente; //Avanzar al siguiente nodo
-		}
-	}
-	else
-	{
-		gotoxy(27, 14); cout << " *- LA PILA SE ENCUENTRA VACIA -* ";
+void Vaciar_Pila(Nodop*& pila) {
+	if (pila == NULL) {
+		gotoxy(27, 14);
+		cout << " *- LA PILA SE ENCUENTRA VACIA -* " << endl;
+		cout << " Presione una tecla para continuar...";
+		_getch(); // Espera una tecla antes de salir
+		return;
 	}
 
-	_getch();
+	// Vaciar la pila
+	while (pila != nullptr) {
+		Nodop* temp = pila;  // Guardar referencia al nodo actual
+		pila = pila->siguiente;  // Mover la pila al siguiente nodo
+		delete temp;  // Liberar memoria del nodo eliminado
+	}
 
+	// Mensaje después de vaciar la pila
+	gotoxy(27, 14);
+	cout << " *- LA PILA HA SIDO VACIADA CORRECTAMENTE -* " << endl;
+	cout << " Presione una tecla para continuar...";
+	_getch(); // Espera una tecla antes de salir
 }
+
+
+
+void Mostrar_Pila(Nodop*& pila, int a, int b, int c, int d, string h, string i, string j, string l, string m)
+{
+	// Verificar si la pila está vacía
+	if (pila == NULL) {
+		gotoxy(27, 14);
+		cout << " *- LA PILA SE ENCUENTRA VACIA -* " << endl;
+		cout << " Presione una tecla para continuar...";
+		_getch(); // Espera una tecla antes de salir
+		return;
+	}
+
+	Nodop* aux = pila; // Puntero auxiliar para recorrer la pila
+	Nodop* ultimo = pila; // Puntero para encontrar el último nodo
+
+	// Encontrar el último nodo recorriendo la pila
+	while (ultimo->siguiente != NULL) {
+		ultimo = ultimo->siguiente;
+	}
+
+	// Recorrer la pila y mostrar los datos
+	while (aux != NULL) {
+		cout << "----------------------------------" << endl;
+
+		if (aux == pila) { // Si es el primer nodo (top de la pila)
+			cout << " \xDB \xDB * Este es el ULTIMO nodo de la pila *\xDB \xDB " << endl << endl;
+		}
+
+		cout << "=== Detalles De Ventas ===" << "\n";
+		cout << " ID venta: " << aux->datos.ID_Ventas << "    \xAE " << &aux->datos.ID_Ventas << "\n";
+		cout << " ID cliente: " << aux->datos.ID_Cliente << "   " << &aux->datos.ID_Cliente << "\n";
+		cout << " Tipo de Cafe: " << aux->datos.Tipo_de_Cafe_ventido << "    \xAE " << &aux->datos.Tipo_de_Cafe_ventido << "\n";
+		cout << " Fecha de venta: " << aux->datos.Fecha_de_venta << "    \xAE " << &aux->datos.Fecha_de_venta << "\n";
+		cout << " Precio Unitario: " << aux->datos.Precio_Unitario << "    \xAE " << &aux->datos.Precio_Unitario << "\n";
+		cout << " Cantidad Vendida: " << aux->datos.Cantidad_vendida << "    \xAE " << &aux->datos.Cantidad_vendida << "\n";
+		cout << " Descuento: " << aux->datos.Descuento << "    \xAE " << &aux->datos.Descuento << "\n";
+		cout << " Metodo de pago: " << aux->datos.Metodo_de_pago << "    \xAE " << &aux->datos.Metodo_de_pago << "\n";
+		cout << " Total: " << aux->datos.Total << "    \xAE " << &aux->datos.Total << "\n" << endl;
+
+		if (aux == ultimo) { // Si es el último nodo (base de la pila)
+			cout << " \xDB \xDB * Este es el PRIMER nodo de la pila *\xDB \xDB " << endl << endl;
+		}
+
+		cout << "---------------------------------- " << endl << endl;
+
+		aux = aux->siguiente; // Avanzar al siguiente nodo
+	}
+
+	cout << " Presione una tecla para continuar...";
+	_getch(); // Espera una tecla para continuar
+}
+
 
 void Modificar_Nodop(Nodop*& pila, int a, int b, int c, int d, string h, string i, string j, string l, string m)
 {
+
+
+	// Verificar si la pila está vacía
+	if (pila == NULL) {
+		gotoxy(27, 14);
+		cout << " *- LA PILA SE ENCUENTRA VACIA -* " << endl;
+		cout << " Presione una tecla para continuar...";
+		_getch(); // Espera una tecla antes de salir
+		return;
+	}
 	Nodop* aux = new Nodop;
 	aux = pila;
 
@@ -252,8 +312,7 @@ void Modificar_Nodop(Nodop*& pila, int a, int b, int c, int d, string h, string 
 
 
 						case 10:
-							PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\OOT_MainMenu_Cancel.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
-						
+							PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\OOT_MainMenu_Cancel.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
 							system("cls");
 							rep = false;
 							break;
@@ -307,7 +366,8 @@ int Opciones_Menu(const char* titulo, const char* opciones[], int n) {
 	do {
 		// Limpiar solo la parte del menú, no toda la pantalla
 		system("cls");
-
+		int numero = generarNumeroAleatorio();
+		grafica(numero);
 		// Mostrar el título del menú
 		gotoxy(40, 5); cout << titulo;
 
@@ -342,14 +402,16 @@ int Opciones_Menu(const char* titulo, const char* opciones[], int n) {
 			if (opcionSeleccionada < 1) {
 				opcionSeleccionada = n;
 			}
-			PlaySound(L"..\\OOT_PauseMenu_Cursor.wav", NULL, SND_FILENAME | SND_ASYNC);
+			
+			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\OOT_PauseMenu_Cursor.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
 			break;
 		case TECLA_ABAJO:
 			opcionSeleccionada++;
 			if (opcionSeleccionada > n) {
 				opcionSeleccionada = 1;
 			}
-			PlaySound(L"..\\OOT_PauseMenu_Cursor.wav", NULL, SND_FILENAME | SND_ASYNC);
+		
+			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\OOT_PauseMenu_Cursor.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
 			break;
 		case ENTER:
 			repite = false; // Salir del bucle para seleccionar la opción
@@ -492,48 +554,56 @@ void dibujarFigura(int opcion) {
 void Menu_Pila() {
 	bool rep = true;
 	int op = 0;
-	const char* titulo = " MENU VENTAS ";
-	const char* opciones[] = { "*-Ingreso de datos-*", "*-Ver datos-*", "*-Modificar Datos-*", "*-Buscar datos-*", "*-Eliminar datos-*", "*- SALIR -*" };
-	int no = 6;
+	const char* titulo = " MENU VENTAS (PILA) orden LIFO ";
+	const char* opciones[] = { "*-Ingreso de datos-*", "*-Ver datos-*", "*-Modificar Datos-*", "*-Buscar datos-*", "*-Eliminar datos-*","*- Vaciar pila -*", "*- SALIR -*" };
+	int no = 7;
 
 	do {
 		system("cls"); // Limpia la pantalla antes de dibujar
+	
 		op = Opciones_Menu(titulo, opciones, no);
 
 		// Dibujar la figura correspondiente a la opción seleccionada
 		dibujarFigura(op);
-
+		
 		switch (op) {
 		case 1:
 			system("cls");
-			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
-		
+			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
 			Insertar_Nodop(pila, VENTAS.Cantidad_vendida, VENTAS.Precio_Unitario, VENTAS.ID_Ventas, VENTAS.ID_Cliente, VENTAS.Tipo_de_Cafe_ventido, VENTAS.Fecha_de_venta, VENTAS.Descuento, VENTAS.Total, VENTAS.Metodo_de_pago);
 			break;
 		case 2:
 			system("cls");
-			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
-			
+
+			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
 			Mostrar_Pila(pila, VENTAS.Cantidad_vendida, VENTAS.Precio_Unitario, VENTAS.ID_Ventas, VENTAS.ID_Cliente, VENTAS.Tipo_de_Cafe_ventido, VENTAS.Fecha_de_venta, VENTAS.Descuento, VENTAS.Total, VENTAS.Metodo_de_pago);
 			break;
 		case 3:
 			system("cls");
-			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
+			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
 			Modificar_Nodop(pila, VENTAS.Cantidad_vendida, VENTAS.Precio_Unitario, VENTAS.ID_Ventas, VENTAS.ID_Cliente, VENTAS.Tipo_de_Cafe_ventido, VENTAS.Fecha_de_venta, VENTAS.Descuento, VENTAS.Total, VENTAS.Metodo_de_pago);
 			break;
 		case 4:
-			system("cls");
-			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
+			system("cls");	
+			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
 			system("cls");
 			Buscar_Nodop(pila, VENTAS.Cantidad_vendida, VENTAS.Precio_Unitario, VENTAS.ID_Ventas, VENTAS.ID_Cliente, VENTAS.Tipo_de_Cafe_ventido, VENTAS.Fecha_de_venta, VENTAS.Descuento, VENTAS.Total, VENTAS.Metodo_de_pago);
 			break;
 		case 5:
 			system("cls");
-			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\x64\\Debug\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
+			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
 			system("cls");
 			Eliminar_Nodop(pila, VENTAS.Cantidad_vendida, VENTAS.Precio_Unitario, VENTAS.ID_Ventas, VENTAS.ID_Cliente, VENTAS.Tipo_de_Cafe_ventido, VENTAS.Fecha_de_venta, VENTAS.Descuento, VENTAS.Total, VENTAS.Metodo_de_pago);
 			break;
+
 		case 6:
+			system("cls");
+			PlaySound(L"C:\\Users\\Castr\\source\\repos\\proyectoParcial\\OOT_MainMenu_Select.wav", NULL, SND_FILENAME | SND_ASYNC); // Sonido al moverse
+			system("cls");
+			Vaciar_Pila(pila);
+			break;
+
+		case 7:
 			rep = false;
 			break;
 		}
@@ -545,6 +615,16 @@ void Menu_Pila() {
 //Funcion para buscar un nodo
 void Buscar_Nodop(Nodop*& pila, int a, int b, int c, int d, string h, string i, string j, string l, string m)
 {
+
+
+	// Verificar si la pila está vacía
+	if (pila == NULL) {
+		gotoxy(27, 14);
+		cout << " *- LA PILA SE ENCUENTRA VACIA -* " << endl;
+		cout << " Presione una tecla para continuar...";
+		_getch(); // Espera una tecla antes de salir
+		return;
+	}
 	Nodop* aux = new Nodop;
 	aux = pila;
 
@@ -606,56 +686,51 @@ void Buscar_Nodop(Nodop*& pila, int a, int b, int c, int d, string h, string i, 
 	_getch();
 }
 
-void Eliminar_Nodop(Nodop*& pila, int a, int b, int c, int d, string h, string i, string j, string l, string m)
-{
-	Nodop* aux = new Nodop;
-	aux = pila;
-
-	if (pila != NULL)
-	{
-		a = aux->datos.ID_Ventas;
-		b = aux->datos.ID_Cliente;
-
-		h = aux->datos.Tipo_de_Cafe_ventido;
-		i = aux->datos.Fecha_de_venta;
-		c = aux->datos.Precio_Unitario;
-		d = aux->datos.Cantidad_vendida;
-
-		j = aux->datos.Descuento;
-		l = aux->datos.Total;
-		m = aux->datos.Metodo_de_pago;
-
-		cout << " *- SE eliminaran los datos de la venta -* ";
-		cout << endl << "----------------------------------";
-		cout << endl << &aux->datos << endl;
-		cout << endl << " ID VENTAS : " << a << endl;
-		cout << endl << " ID CLIENTE: " << b << endl;
-		cout << endl << " TIPO DE CAFE: " << h << endl;
-		cout << endl << " FECHA DE VENTAS: " << i << endl;
-		cout << endl << " PRECIO UNITARIO: " << c << endl;
-		cout << endl << " CANTIDAD VENDIDA: " << d << endl;
-		cout << endl << " DESCUENTA: " << j << endl;
-		cout << endl << " Total: " << l << endl;
-		cout << endl << " Metodo de pago: " << m << endl;
-		cout << "----------------------------------\n";
-
-		pila = aux->siguiente; // Actualizar el puntero siguiente del nodo anterior
-		delete aux;
-
-		cout << " *- LA PILA QUEDO DE LA SIGUIENTE MANERA: -*" << endl;
-		Mostrar_Pila(pila, VENTAS.Cantidad_vendida, VENTAS.Precio_Unitario, VENTAS.ID_Ventas, VENTAS.ID_Cliente, VENTAS.Tipo_de_Cafe_ventido, VENTAS.Fecha_de_venta, VENTAS.Descuento, VENTAS.Total, VENTAS.Metodo_de_pago);
-	}
-	else
-	{
-		gotoxy(40, 14); cout << " *- LA PILA SE ENCUENTRA VACIA -* ";
-
+void Eliminar_Nodop(Nodop*& pila, int a, int b, int c, int d, string h, string i, string j, string l, string m) {
+	// Verificar si la pila está vacía
+	if (pila == NULL) {
+		gotoxy(27, 14);
+		cout << " *- LA PILA SE ENCUENTRA VACIA -* " << endl;
+		cout << " Presione una tecla para continuar...";
+		_getch(); // Espera una tecla antes de salir
 		return;
 	}
+
+	// Obtener el nodo a eliminar (el último insertado, que está en la cima)
+	Nodop* aux = pila;
+
+	system("cls");
+	// Mostrar los datos del nodo que se va a eliminar
+	cout << " *- Eliminando el último dato ingresado -* " << endl;
+	cout << "----------------------------------" << endl;
+	cout << " ID VENTAS: " << aux->datos.ID_Ventas << endl;
+	cout << " ID CLIENTE: " << aux->datos.ID_Cliente << endl;
+	cout << " TIPO DE CAFE: " << aux->datos.Tipo_de_Cafe_ventido << endl;
+	cout << " FECHA DE VENTAS: " << aux->datos.Fecha_de_venta << endl;
+	cout << " PRECIO UNITARIO: " << aux->datos.Precio_Unitario << endl;
+	cout << " CANTIDAD VENDIDA: " << aux->datos.Cantidad_vendida << endl;
+	cout << " DESCUENTO: " << aux->datos.Descuento << endl;
+	cout << " TOTAL: " << aux->datos.Total << endl;
+	cout << " METODO DE PAGO: " << aux->datos.Metodo_de_pago << endl;
+	cout << "----------------------------------" << endl;
+
+	cout << " Presione una tecla para confirmar la eliminación...";
+	_getch(); // Espera una tecla antes de eliminar
+
+	// Eliminar el nodo de la cima
+	pila = aux->siguiente; // Actualizar el tope de la pila
+	delete aux;            // Liberar la memoria del nodo eliminado
+
+	cout << endl << " *- NODO ELIMINADO CORRECTAMENTE -* " << endl;
+	cout << " Presione una tecla para continuar...";
+	_getch(); // Pausa final antes de salir
 }
 
 void DibujarRecuadro() {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	system("cls"); // Limpiar la pantalla
+	int numero = generarNumeroAleatorio();
+	grafica(numero);
 	SetConsoleTextAttribute(hConsole, 15);
 
 	dibujarCuadro(10, 0, 100, 4); // Dibujar el cuadro
